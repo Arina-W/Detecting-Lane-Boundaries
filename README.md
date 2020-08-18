@@ -118,3 +118,59 @@ All that said, please be concise!  We're not looking for you to write a book her
    ![step4](https://github.com/Arina-W/Detecting-Lane-Boundaries/blob/master/output_images/Warped_perspective.png)
 
 
+
+### **5. Find lane boundary**
+ * After step 4, the final result of the image will be in binary image(no color channel) where the lane lines stand out very clearly. However, to decide *explicitly* the exact pixels that make the lines, I used the histogram method to find 2 most prominent peaks and regard them as left and right. 
+ ```
+     histogram = np.sum(binarywarped[binarywarped.shape[0]//2:,:], axis=0) # histogram of bottom half of image
+    output = np.dstack((binarywarped, binarywarped, binarywarped))
+    # Find peak on left and right as starting point of windows creation
+    midbottom = np.int(histogram.shape[0]//2)
+    leftbottom =  np.argmax(histogram[:midbottom])
+    rightbottom = np.argmax(histogram[midbottom:]) + midbottom
+    
+    # Window parameters
+    winnum, winwidth, minpix = 8, 100, 50 # minpix to recenter windows
+    winheight = np.int(binarywarped.shape[0]//winnum)
+    
+    # Find (x,y) of all nonzero(non-black) pixels 
+    nonzero = binarywarped.nonzero()
+    nonzerox, nonzeroy = nonzero[1], nonzero[0]
+    
+    # For update when windows going up
+    newleft = leftbottom
+    newright = rightbottom
+    
+    # Create list to store left and right indices
+    leftlaneinds = []
+    rightlaneinds = []
+ ```
+ * This method will be repeated a number of times, and each time will create a window that specifies the 2 peaks in the particular region of the image. 
+ ```
+     for win in range(winnum):
+        
+        # Set (x,y) boundaries for left and right windows
+        ylow = binarywarped.shape[0] - (win + 1)*winheight
+        yhigh = binarywarped.shape[0] - win*winheight
+        xleftlow = newleft - winwidth
+        xlefthigh = newleft + winwidth
+        xrightlow = newright - winwidth
+        xrighthigh = newright + winwidth
+        
+        # Draw windows
+        cv2.rectangle(output, (xleftlow, ylow), (xlefthigh, yhigh), (0,255,0), 2)
+        cv2.rectangle(output, (xrightlow, ylow), (xrighthigh, yhigh), (0,255,0), 2)
+
+        # Find nonzeros(nonblack) pixels in windows
+        goodleft = ((nonzeroy > ylow) & (nonzeroy < yhigh) & (nonzerox > xleftlow) & (nonzerox < xlefthigh)).nonzero()[0]
+        goodright = ((nonzeroy > ylow) & (nonzeroy < yhigh) & (nonzerox > xrightlow) & (nonzerox < xrighthigh)).nonzero()[0]
+        
+        # Append indices to lists
+        leftlaneinds.append(goodleft)
+        rightlaneinds.append(goodright)
+ ```
+ * Below is the result of 8 repeated histogram for 8 windows on a test image.
+ 
+ ![step5](https://github.com/Arina-W/Detecting-Lane-Boundaries/blob/master/output_images/lane_windows.png)
+ 
+ 
