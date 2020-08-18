@@ -279,6 +279,6 @@ In this project, I wrote a software pipeline that identifies lane boundaries in 
  * The parameters used in this pipeline were highly influenced by the road status, especially fainted line paint or even shadows emerged from the environment. This makes it more challenging when there is change in the weather condition in any particular time in a day. 
  * In this final result [(video can be found here)](https://github.com/Arina-W/Detecting-Lane-Boundaries/blob/master/videos/project_video_result.mp4) This video shows that some parts of the road will affect the parameters set in the pipeline thus resulting in inconsistent output boundaries. 
  * Most of the time that the model did not perform well were when there was some form of shadows emerging on the road.
- * One suggestion that could produce a cleaner and smoother result would be to create a model that could help enhance lane lines apart from emerging shadows. 
+ * One improvement that could produce a cleaner and smoother result would be to create a model that could help enhance lane lines apart from emerging shadows. 
 
  * Lastly, thank you for your time taken for viewing this project. I had a nice time writing it! Please share your thoughts or suggestions if/where applicable. Have a nice day!
