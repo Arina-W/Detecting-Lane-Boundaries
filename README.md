@@ -120,11 +120,12 @@ All that said, please be concise!  We're not looking for you to write a book her
 
 
 ### **5. Find lane boundary**
- * After step 4, the final result of the image will be in binary image(no color channel) where the lane lines stand out very clearly. However, to decide *explicitly* the exact pixels that make the lines, I used the histogram method to find 2 most prominent peaks and regard them as left and right. An in-depth introduction about this method can be found in the [Lesson 8 : Advanced Computer Vision](https://classroom.udacity.com/nanodegrees/nd013/parts/168c60f1-cc92-450a-a91b-e427c326e6a7/modules/5d1efbaa-27d0-4ad5-a67a-48729ccebd9c/lessons/626f183c-593e-41d7-a828-eda3c6122573/concepts/011b8b18-331f-4f43-8a04-bf55787b347f) from the [Udacity's Self-Driving Car Nanodegree](https://www.udacity.com/course/self-driving-car-engineer-nanodegree--nd013)
+ * After step 4, the final result of the image will be in binary image(no color channel) where the lane lines stand out very clearly. However, to decide *explicitly* the exact pixels that make the lines, I used the histogram method to find 2 most prominent peaks and regard them as left and right. 
+ * An in-depth introduction about this method can be found in the [Lesson 8 : Advanced Computer Vision](https://classroom.udacity.com/nanodegrees/nd013/parts/168c60f1-cc92-450a-a91b-e427c326e6a7/modules/5d1efbaa-27d0-4ad5-a67a-48729ccebd9c/lessons/626f183c-593e-41d7-a828-eda3c6122573/concepts/011b8b18-331f-4f43-8a04-bf55787b347f) from the [Udacity's Self-Driving Car Nanodegree.](https://www.udacity.com/course/self-driving-car-engineer-nanodegree--nd013)
   
    ![step5.1](https://video.udacity-data.com/topher/2018/June/5b22f6d8_screen-shot-2017-01-28-at-11.21.09-am/screen-shot-2017-01-28-at-11.21.09-am.png)
  ```
-     histogram = np.sum(binarywarped[binarywarped.shape[0]//2:,:], axis=0) # histogram of bottom half of image
+    histogram = np.sum(binarywarped[binarywarped.shape[0]//2:,:], axis=0) # histogram of bottom half of image
     output = np.dstack((binarywarped, binarywarped, binarywarped))
     # Find peak on left and right as starting point of windows creation
     midbottom = np.int(histogram.shape[0]//2)
@@ -173,16 +174,40 @@ All that said, please be concise!  We're not looking for you to write a book her
  ```
  * Below is the result of 8 repeated histogram for 8 windows on a test image.
  
- ![step5](https://github.com/Arina-W/Detecting-Lane-Boundaries/blob/master/output_images/lane_windows.png)
+ ![step5.2](https://github.com/Arina-W/Detecting-Lane-Boundaries/blob/master/output_images/lane_windows.png)
+ 
+ 
+ * The output from the last windows then will be feed into a function that will produce a sliding window by utilizing a numpy function, `np.polyfit`, that takes both side's coordinates and fit a second order polynomial for each, demonstrated by image below.
+ 
+ ![step5.3](https://raw.githubusercontent.com/Arina-W/Detecting-Lane-Boundaries/master/output_images/lane_lines.png)
  
  
 
 ### **6. Calculate lane curvature**
- * 
+ * To avoid keep making unnecessary number of sliding windows for each image(since a video might have thousands of images or even more), the previous polynomial will be used to skip the sliding windows and instead, use it to fit a polynomial to all the relevant pixels found in the sliding windows.
+```
+    # Generate y coordinate
+    ploty = np.linspace(0, output.shape[0] - 1, output.shape[0])
+
+    # MUST define conversion in x and y from pixel to real world METERS (U.S. highway metrics)
+    ymperpixel = 30/720 # lane is about 30m long in the projection video
+    xmperpixel = 3.7/800 # lane width is 3.7m wide, 720 is pixels in y axis
+
+    # Create new polynomials to x and y in world space
+    leftcurve = np.polyfit(ploty*ymperpixel, leftx*xmperpixel, 2)
+    rightcurve = np.polyfit(ploty*ymperpixel, rightx*xmperpixel, 2)
+```
+ * Lane curvature, or radius, are calculated to find the lane boundary. In-depth tutorial for finding it can be found [here.](https://www.intmath.com/applications-differentiation/8-radius-curvature.php)
  
 
 ### **7. Unwarp and draw entire lane boundaries**
- * 
+ * The radius calculated previously will be fed into the this step, which will draw a boundary using OpenCV's `cv2.fillPoly()` 
+ * This step also will take the final output and unwarp(return to the perspective *before* bird's-eye view) it to prepare for the follwoing step.
+ * Result of this step are shown below.
+ 
+  ![step7](https://github.com/Arina-W/Detecting-Lane-Boundaries/blob/master/output_images/lane_boundary.png)
+  
+ 
 
 ### **8. Insert curvature and vehicle position value onto entire lane boundary image**
  * 
