@@ -189,7 +189,7 @@ All that said, please be concise!  We're not looking for you to write a book her
     # Generate y coordinate
     ploty = np.linspace(0, output.shape[0] - 1, output.shape[0])
 
-    # MUST define conversion in x and y from pixel to real world METERS (U.S. highway metrics)
+    # MUST define conversion in x and y from pixel to real world METERS (U.S. highway regulations)
     ymperpixel = 30/720 # lane is about 30m long in the projection video
     xmperpixel = 3.7/800 # lane width is 3.7m wide, 720 is pixels in y axis
 
@@ -210,9 +210,79 @@ All that said, please be concise!  We're not looking for you to write a book her
  
 
 ### **8. Insert curvature and vehicle position value onto entire lane boundary image**
- * 
+ *  Curvature radius and vehicle position metrics calculated in the code below will be visualized in the result taken from step 7.
+ ```
+     # Calculate radius of curvature
+    
+    leftradius = ((1 + (2*leftcurve[0]*np.max(ploty)*ymperpixel + leftcurve[1])**2)**1.5)/np.absolute(2*leftcurve[0])
+    rightradius = ((1 + (2*rightcurve[0]*np.max(ploty)*ymperpixel + rightcurve[1])**2)**1.5)/np.absolute(2*rightcurve[0])
+    
+    # Average radius
+    radius = np.average([leftradius, rightradius])
+    
+    # From center
+    midimage = output.shape[1]//2
+    
+    # Car position with respect to camera center
+    carposition = (leftx[-1] + rightx[-1]/2)
+    
+    # Car offset
+    center = (midimage-carposition)*xmperpixel
+       
+    cv2.putText(finaloutput, 'Radius of curvature: {:.2f} m'.format(radius),
+               (60,60), cv2.FONT_HERSHEY_DUPLEX, 1.5, (255,255,0), 5)
+    cv2.putText(finaloutput, 'Car distance from center : {:.2f} m'.format(center),
+               (60,120), cv2.FONT_HERSHEY_DUPLEX, 1.5, (255,255,0), 5)
+ ```
+ 
+ * Shown below is the result of this step.
+ 
+  ![step7](https://github.com/Arina-W/Detecting-Lane-Boundaries/blob/master/output_images/with_numerical_est.png)
+  
+ 
 
 ### **9. Test pipeline with a video**
- * 
+ * Finally, all of the functions created from step 1 to 8 above will be put together in the `ProcessVideo()` class.
+ * The entire class can be viewed below:
+ ```
+ class ProcessVideo:
+    def __init__(self, images):
+        images = glob.glob(images) # Create a list of images 
+        
+        # Calibrate camera
+        self.ret, self.mtx, self.dist, self.rvecs, self.tvecs = calibratecamera(images)
+        
+    def __call__(self, img):
 
+        undist = undistort(img, self.mtx, self.dist)
+        colortransformed = colortransform(undist)
+        warpedimg = warp(colortransformed)
+        output, leftx, lefty, rightx, righty, leftfitx, rightfitx = slidingpoly(warpedimg)
+        makeboundary = drawboundary(img, warpedimg, leftfitx, rightfitx)
+        finaloutput = drawtext(leftfitx, rightfitx, makeboundary)
+        
+        return finaloutput       
+ ```
+ * To run the pipeline on a video, I used `VideoFileClip` from `moviepy.editor` as per shown below.
+ ```
+ from moviepy.editor import VideoFileClip
+ 
+ def buildvideo(pathprefix):
+    outputname = 'videos/{}_result.mp4'.format(pathprefix)
+    inputname = VideoFileClip('videos/{}.mp4'.format(pathprefix))
+    
+    processresult = ProcessVideo('./camera_cal/calibration*.jpg')
+    white_clip = inputname.fl_image(processresult)
+    
+    %time white_clip.write_videofile(outputname, audio=False)
+ ```
+ * A gif version of the result was also created and is shown at the top of this README.
+ 
+ 
+## Discussion
+
+ * The parameters used in this pipeline were highly influenced by the road status, especially fainted line paint or even shadows emerged from the environment. This makes it more challenging when there is change in the weather condition in any particular time in a day. 
+ * In this final result [(video can be found here)](https://github.com/Arina-W/Detecting-Lane-Boundaries/blob/master/videos/project_video_result.mp4) This video shows that some parts of the road will affect the parameters set in the pipeline thus resulting in inconsistent output boundaries. 
+ * Most of the time that the model did not perform well were when there was some form of shadows emerging on the road.
+ * One suggestion that could produce a cleaner and smoother result would be to create a model that could help enhance lane lines apart from emerging shadows. 
 
