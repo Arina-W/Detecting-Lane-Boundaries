@@ -3,7 +3,6 @@
 In this project, I wrote a software pipeline that identifies lane boundaries in a specific video taken from a front facing camera mounted on a vehicle. Frames from the video were taken and used to extract enough information while creating this pipeline. All details in this pipeline can be seen in [this depository](https://github.com/Arina-W/Detecting-Lane-Boundaries).
 
 ## Directories Structure:
----
 
 - `camera_cal`    : Compilation of chessboards images for camera calibration purpose
 - `output_images` : Compilation of output images from each step of pipeline
@@ -12,15 +11,14 @@ In this project, I wrote a software pipeline that identifies lane boundaries in 
 
 
 ## Creating a great writeup:
----
+
 A great writeup should include the rubric points as well as your description of how you addressed each point.  You should include a detailed description of the code used in each step (with line-number references and code snippets where necessary), and links to other supporting documents or external references.  You should include images in your writeup to demonstrate how your code works with examples.  
 
 All that said, please be concise!  We're not looking for you to write a book here, just a brief description of how you passed each rubric point, and references to the relevant code :). 
 
 ## The Project
----
 
-### This pipeline consists of 9 steps that are explained below:
+#### This pipeline consists of 9 steps that are explained below:
 
 ### **1. Create a funtion that initiates camera calibration**
  * Camera lenses are prone to inherent distortions that can affect its perception of the real world. 
