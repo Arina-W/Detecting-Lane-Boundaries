@@ -1,6 +1,6 @@
 # Project overview
 
-In this project, I wrote a software pipeline that identifies lane boundaries in a specific video taken from a front facing camera mounted on a vehicle. Frames from the video were taken and used to extract enough information while creating this pipeline. All details in this pipeline can be seen in [this depository](https://github.com/Arina-W/Detecting-Lane-Boundaries).
+In this project, I wrote a software pipeline that identifies lane boundaries in a specific video taken from a front facing camera mounted on a vehicle. Frames from the video were taken and used to extract enough information while creating this pipeline. All details in this pipeline can be seen in [this depository](https://github.com/Arina-W/Detecting-Lane-Boundaries). The entire code of this pipeline can be found in this [Jupyter Notebook](http://localhost:8889/notebooks/PycharmProjects/P2/CarND-Advanced-Lane-Lines-master/AdvancedLaneFinding.ipynb)
 
 ## Directories Structure:
 
@@ -16,7 +16,7 @@ In this project, I wrote a software pipeline that identifies lane boundaries in 
 ### **1. Create a funtion that initiates camera calibration**
  * Camera lenses are prone to inherent distortions that can affect its perception of the real world. 
  * Taking account of this problem, as a starting step, camera calibration function will be applied so the car will get an accurate observation of the environment to navigate safely. 
- * Here, OpenCV's `cv2.findChessboardCorners()` and `cv2.calibrateCamera()` are used to get information for calibration purpose.
+ * Here, [OpenCV's](https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_calib3d/py_calibration/py_calibration.html) `cv2.findChessboardCorners()` and `cv2.calibrateCamera()` are used to get information for calibration purpose.
  ```
         gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
         found, corners = cv2.findChessboardCorners(gray, (nx,ny), None)
@@ -48,7 +48,7 @@ In this project, I wrote a software pipeline that identifies lane boundaries in 
 
 ### **3. Color Transform**
  * Gradients and color spaces taken off of an image offer great advantages to find pixels that form the lines in the video. 
- * In this step a gradient threshold using `cv2.Sobel` operator in x the direction are used since it does a cleaner job to pick up the lane lines in the image.
+ * In this step a gradient threshold using `cv2.Sobel` [operator](https://docs.opencv.org/3.4/d2/d2c/tutorial_sobel_derivatives.html) in x the direction are used since it does a cleaner job to pick up the lane lines in the image.
 ```
     hls = cv2.cvtColor(img, cv2.COLOR_RGB2HLS)
     satchannel = hls[:,:,2] # saturation channel
@@ -62,7 +62,7 @@ In this project, I wrote a software pipeline that identifies lane boundaries in 
     sobelxbinary = np.zeros_like(scaledsobelx)
     sobelxbinary[(scaledsobelx >= gradientthres[0]) & (scaledsobelx <= gradientthres[1])] = 1
 ```
- * In combination of the Sobel operator, a threshold of S channel of HLS color space are also taken to filter out better look of the lines.
+ * In combination of the Sobel [operator,](https://docs.opencv.org/3.4/d2/d2c/tutorial_sobel_derivatives.html) a threshold of S channel of HLS color space are also taken to filter out better look of the lines.
 ```
     # Threshold saturation channel 
     satbinary = np.zeros_like(satchannel)
@@ -100,7 +100,7 @@ In this project, I wrote a software pipeline that identifies lane boundaries in 
         [width-100, height]
     ])
  ```
- * Here, OpenCV function `cv2.getPerspectiveTransform()` and `cv2.warpPerspective()` are used to transform the area of the ROI to a top-down view.
+ * Here, [OpenCV](https://docs.opencv.org/2.4/modules/imgproc/doc/geometric_transformations.html) function `cv2.getPerspectiveTransform()` and `cv2.warpPerspective()` are used to transform the area of the ROI to a top-down view.
  ```
     imgsize = (img.shape[1], img.shape[0])
     Matrix = cv2.getPerspectiveTransform(src, dst)
@@ -170,7 +170,7 @@ In this project, I wrote a software pipeline that identifies lane boundaries in 
  ![step5.2](https://github.com/Arina-W/Detecting-Lane-Boundaries/blob/master/output_images/lane_windows.png)
  
  
- * The output from the last windows then will be feed into a function that will produce a sliding window by utilizing a numpy function, `np.polyfit`, that takes both side's coordinates and fit a second order polynomial for each, demonstrated by image below.
+ * The output from the last windows then will be feed into a function that will produce a sliding window by utilizing a [numpy function](https://numpy.org/doc/stable/reference/generated/numpy.polyfit.html), `np.polyfit`, that takes both side's coordinates and fit a second order polynomial for each, demonstrated by image below.
  
  ![step5.3](https://raw.githubusercontent.com/Arina-W/Detecting-Lane-Boundaries/master/output_images/lane_lines.png)
  
@@ -194,8 +194,8 @@ In this project, I wrote a software pipeline that identifies lane boundaries in 
  
 
 ### **7. Unwarp and draw entire lane boundaries**
- * The radius calculated previously will be fed into the this step, which will draw a boundary using OpenCV's `cv2.fillPoly()` 
- * This step also will take the final output and unwarp(return to the perspective *before* bird's-eye view) it to prepare for the follwoing step.
+ * The radius calculated previously will be fed into the this step, which will draw a boundary using [OpenCV's](https://docs.opencv.org/2.4/modules/core/doc/drawing_functions.html) `cv2.fillPoly()` 
+ * This step also will take the final output and unwarp(return to the perspective *before* bird's-eye view) it to prepare for the following step.
  * Result of this step are shown below.
  
   ![step7](https://github.com/Arina-W/Detecting-Lane-Boundaries/blob/master/output_images/lane_boundary.png)
@@ -279,3 +279,4 @@ In this project, I wrote a software pipeline that identifies lane boundaries in 
  * Most of the time that the model did not perform well were when there was some form of shadows emerging on the road.
  * One suggestion that could produce a cleaner and smoother result would be to create a model that could help enhance lane lines apart from emerging shadows. 
 
+ * Lastly, thank you for your time taken for viewing this project. I had a nice time writing it! Please share your thoughts or suggestions if/where applicable. Have a nice day!
