@@ -87,21 +87,34 @@ All that said, please be concise!  We're not looking for you to write a book her
 
 
 ### **4. Perspective Transform**
- * This step maps 4 points in a test image to a different(desired) angle with a new perspective. The transformation that is beneficial for this project is the *birds's-eye view* transform.
- * Here, OpenCV function `cv2.getPerspectiveTransform()` and `cv2.warpPerspective()` are used to transform the area of the desired 4 points to a top-down view.
+ * This step maps 4 points(makes Region of Interest) in a test image to a different(desired) angle with a new perspective. The transformation that is beneficial for this project is the *birds's-eye view* transform. ROI are defined below:
+ ```
+     height, width = img.shape[:2]
+
+    # 4 points for original image
+    src = np.float32([
+        [width//2-76, height*0.625],
+        [width//2+76, height*0.625],
+        [-100,        height],
+        [width+100,   height]
+    ])
+
+    # 4 points for destination image
+    dst = np.float32([
+        [100,       0],
+        [width-100, 0],
+        [100,       height],
+        [width-100, height]
+    ])
+ ```
+ * Here, OpenCV function `cv2.getPerspectiveTransform()` and `cv2.warpPerspective()` are used to transform the area of the ROI to a top-down view.
+ ```
+    imgsize = (img.shape[1], img.shape[0])
+    Matrix = cv2.getPerspectiveTransform(src, dst)
+    warped = cv2.warpPerspective(img, Matrix, imgsize, flags=cv2.INTER_NEAREST) # keep same size as input image
+ ```
+  * Below is the result of a bird's-eye view of one of the ROI of a test image taken from the video. 
+  
+   ![step4](https://github.com/Arina-W/Detecting-Lane-Boundaries/blob/master/output_images/Warped_perspective.png)
 
 
-### **5. Find lane boundary**
- * 
-
-### **6. Calculate lane curvature**
- * 
-
-### **7. Unwarp and draw entire lane boundaries**
- * 
-
-### **8. Insert curvature and vehicle position value onto entire lane boundary image**
- * 
-
-### **9. Test pipeline with a video**
- * 
