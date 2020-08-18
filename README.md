@@ -9,13 +9,6 @@ In this project, I wrote a software pipeline that identifies lane boundaries in 
 - `test_images`   : Compilation of test images taken from video to extract information
 - `videos`        : Compilation of test video and output result of pipeline
 
-
-## Creating a great writeup:
-
-A great writeup should include the rubric points as well as your description of how you addressed each point.  You should include a detailed description of the code used in each step (with line-number references and code snippets where necessary), and links to other supporting documents or external references.  You should include images in your writeup to demonstrate how your code works with examples.  
-
-All that said, please be concise!  We're not looking for you to write a book here, just a brief description of how you passed each rubric point, and references to the relevant code :). 
-
 ## The Project
 
 #### This pipeline consists of 9 steps that are explained below:
