@@ -1,6 +1,6 @@
 # Project overview
 
-In this project, I wrote a software pipeline that identifies lane boundaries in a specific video taken from a front facing camera mounted on a vehicle. Frames from the video were taken and used to extract enough information while creating this pipeline. All details in this pipeline can be seen in [this depository](https://github.com/Arina-W/Detecting-Lane-Boundaries). The entire code of this pipeline can be found in this [Jupyter Notebook](http://localhost:8889/notebooks/PycharmProjects/P2/CarND-Advanced-Lane-Lines-master/AdvancedLaneFinding.ipynb)
+In this project, I wrote a software pipeline that identifies lane boundaries in a specific video taken from a front facing camera mounted on a vehicle. Frames from the video were taken and used to extract enough information while creating this pipeline. All details in this pipeline can be seen in [this depository](https://github.com/Arina-W/Detecting-Lane-Boundaries). The entire code of this pipeline can be found in this [Jupyter Notebook.](http://localhost:8889/notebooks/PycharmProjects/P2/CarND-Advanced-Lane-Lines-master/AdvancedLaneFinding.ipynb)
 
 ## Directories Structure:
 
@@ -35,7 +35,7 @@ In this project, I wrote a software pipeline that identifies lane boundaries in 
 
 ### **2. Distortion Correction**
  * This step is crucial to ensure that the geometrical shape of objects are represented consistently, no matter where they appear in the image.
- * To achieve this, OpenCV function `cv2.undistort()` are applied to compute the calibration of camera and undistortion using Matrix, `mtx`, value and distortion coefficient, `dist`, obtained from step one. 
+ * To achieve this, [OpenCV](https://docs.opencv.org/2.4/modules/imgproc/doc/geometric_transformations.html) function `cv2.undistort()` are applied to compute the calibration of camera and undistortion using Matrix, `mtx`, value and distortion coefficient, `dist`, obtained from step one. 
  * Below is the original image(before) and its undistorted image(after), after applying both step 1 and 2 of pipeline.
  
  ![step2](https://github.com/Arina-W/Detecting-Lane-Boundaries/blob/master/output_images/camera_calibration.png)
