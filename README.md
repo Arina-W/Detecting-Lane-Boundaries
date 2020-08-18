@@ -120,7 +120,9 @@ All that said, please be concise!  We're not looking for you to write a book her
 
 
 ### **5. Find lane boundary**
- * After step 4, the final result of the image will be in binary image(no color channel) where the lane lines stand out very clearly. However, to decide *explicitly* the exact pixels that make the lines, I used the histogram method to find 2 most prominent peaks and regard them as left and right. 
+ * After step 4, the final result of the image will be in binary image(no color channel) where the lane lines stand out very clearly. However, to decide *explicitly* the exact pixels that make the lines, I used the histogram method to find 2 most prominent peaks and regard them as left and right. An in-depth introduction about this method can be found in the [Lesson 8 : Advanced Computer Vision](https://classroom.udacity.com/nanodegrees/nd013/parts/168c60f1-cc92-450a-a91b-e427c326e6a7/modules/5d1efbaa-27d0-4ad5-a67a-48729ccebd9c/lessons/626f183c-593e-41d7-a828-eda3c6122573/concepts/011b8b18-331f-4f43-8a04-bf55787b347f) from the [Udacity's Self-Driving Car Nanodegree](https://www.udacity.com/course/self-driving-car-engineer-nanodegree--nd013)
+  
+   ![step5.1](https://video.udacity-data.com/topher/2018/June/5b22f6d8_screen-shot-2017-01-28-at-11.21.09-am/screen-shot-2017-01-28-at-11.21.09-am.png)
  ```
      histogram = np.sum(binarywarped[binarywarped.shape[0]//2:,:], axis=0) # histogram of bottom half of image
     output = np.dstack((binarywarped, binarywarped, binarywarped))
@@ -174,3 +176,18 @@ All that said, please be concise!  We're not looking for you to write a book her
  ![step5](https://github.com/Arina-W/Detecting-Lane-Boundaries/blob/master/output_images/lane_windows.png)
  
  
+
+### **6. Calculate lane curvature**
+ * 
+ 
+
+### **7. Unwarp and draw entire lane boundaries**
+ * 
+
+### **8. Insert curvature and vehicle position value onto entire lane boundary image**
+ * 
+
+### **9. Test pipeline with a video**
+ * 
+
+
